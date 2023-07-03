@@ -1,0 +1,66 @@
+---
+title: "Chapter 2"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+```
+
+```{r}
+head(airquality)
+tail(airquality)
+```
+
+```{r}
+mean(airquality$Ozone, na.rm =TRUE) #remove missing value
+```
+
+## Subset
+
+```{r}
+Month.Ozone = subset(airquality, select = c(Month,Day,Ozone)) #create subset of selected attribute
+Month.Ozone
+```
+
+```{r}
+August.Ozone = subset(airquality, Month == 8, select = c(Month,Day,Ozone))
+August.Ozone
+```
+
+```{r}
+analysis = lm(Temp~Month, data = airquality)
+summary(analysis)
+```
+
+```{r}
+namiss = drop_na(airquality) #data frame with removed missing value
+head(namiss)
+```
+
+```{r}
+set1 = read.csv("set1.csv", header =T, na.strings = "?")
+set1
+```
+
+## tidyverse
+
+```{r}
+set1.yum = rownames_to_column(set1, var="industry") #assign column name to row number
+```
+
+```{r}
+set1.yum
+longset1 = gather(set1.yum,Year,Millions_Dollars,3:8) #rearrange data frame so it reduce dimension
+longset1
+```
+
+```{r}
+spread(longset1, Year, Millions_Dollars) #revert gather
+```
+
+```{r}
+filter(longset1, X == "Tesla") #filter data frame 
+```
+

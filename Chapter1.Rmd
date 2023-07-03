@@ -1,0 +1,114 @@
+---
+title: "Chapter 1"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+```
+
+## Notes on vectors 
+
+```{r}
+x <- c(3,2,4,6) 
+x
+sum(x)  #sum
+mean(x) #mean
+var(x)  #variance
+
+```
+
+```{r}
+y<- seq(2,10,2) #vector with sequence between 2 and 10 by increments of 2
+y
+
+y <- 2:10  #vector between 2 and 10
+y
+
+y_rep <- rep(y,3)  #repeat vector 3 times
+y_rep
+
+v_rep <- c(1,2,3,5,2,2,2,2,3)  
+y_rep <- rep(y, v_rep)   #repeat element of a vector based on correlating value of a vector (v_rep)
+y_rep
+```
+
+```{r}
+length(y)        #length of vector
+y <- append(y,4) #append value
+y <- append(y,10,after=0) #append value at 0th position
+y
+length(y)
+```
+
+## Matrix
+
+```{r}
+y <- 2:10
+dim(y) <- c(3,3)  #creation of matrix
+y
+
+t(y) #transpose
+```
+
+
+```{r}
+x <- matrix(seq(6,30,3), nrow = 3)   #matrix 3x3
+x
+
+num_matrix <- matrix(1:9, nrow = 3, byrow=T) #input matrix horizontally
+num_matrix
+
+num_matrix[2,2]  #specific value
+num_matrix[3,]   #specific row
+num_matrix[,2]   #specific column
+
+x*num_matrix  #multiply matrix
+x+num_matrix  #add matrix
+```
+
+## List
+
+```{r}
+candy <- c("Kit Kat", "Hershy", "Mounds")
+YearE <- c(2014, 2012, 2017)
+
+candyI <- list(types = candy, ageEx = YearE)  #create list
+candyI
+candyI$types  #print candy type
+candyI$ageEx  #print expiration of candy 
+
+candyI$types[candyI$ageEx > 2013]  #print candy if expiration greater than 2013
+candyI$types[1] #print first candy type
+```
+
+## Data frames
+
+```{r}
+species <- c("Giraffe", "Aligator", "Racoon")
+weight <- c(400, 300, 40)
+gender <- c("F","M","M")
+
+genderf <- factor(gender)   #convert to factor
+set1 <- data.frame(species, weight, genderf)  #put vectors in a data frame
+set1
+```
+
+```{r}
+set1[1,2]   #specific value in data frame
+set1[2,]    #specific row of data frame
+
+mean(set1$weight)  #average of animal weight
+mean(set1$weight[set1$genderf == "M"]) #average of animal weight if male 
+with(set1, mean(weight[genderf == "M"])) #same as line 102
+
+nrow(set1)  #number of row
+ncol(set1)  #number of column
+```
+
+```{r}
+animalk <- c("Mammal", "Reptile", "Mammal")
+set1.add <- cbind(set1, animalk)  #add column
+set1
+```
