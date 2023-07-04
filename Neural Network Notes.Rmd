@@ -1,0 +1,56 @@
+---
+title: "Neural Network Notes"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+library(caret)
+library(grid)
+library(gridExtra)
+library(GGally)
+library(rattle)
+library(MASS)
+library(caTools)
+library(nnet)
+library(NeuralNetTools)
+library(neuralnet)
+```
+
+## Neural Network (feedfoward)
+
+```{r}
+set.seed(3920)
+irisam=sample.split(iris$Species,SplitRatio = 0.7)
+iris.train=subset(iris,irisam==TRUE)
+iris.test=subset(iris,irisam==FALSE)
+```
+
+```{r}
+irisnn = nnet(Species~Petal.Length + Petal.Width, iris.train, size=4)
+summary(irisnn)
+```
+
+```{r}
+plotnet(irisnn)
+```
+
+```{r}
+predictions = predict(irisnn,iris.test,type="class")
+table(iris.test$Species,predictions)
+```
+
+```{r}
+olden(irisnn)
+```
+
+```{r}
+model1 = neuralnet(
+    Species~Petal.Length+Petal.Width,
+data=iris.train,
+hidden=c(4,1),
+linear.output = FALSE
+)
+plot(model1,rep="best")
+```

@@ -1,0 +1,62 @@
+---
+title: "SVM Notes"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+library(caret)
+library(grid)
+library(gridExtra)
+library(GGally)
+library(rattle)
+library(MASS)
+library(e1071)
+library(kernlab)
+library(caTools)
+```
+
+## Support Vector Machine
+
+```{r}
+set.seed(3920)
+myiris2 = subset(iris, Species != "setosa")
+myiris2$Species = factor(myiris2$Species)
+svmsplit = sample.split(myiris2$Species, SplitRatio = 0.75)
+training.set = subset(myiris2, svmsplit==TRUE)
+test.set = subset(myiris2, svmsplit==FALSE)
+```
+
+```{r}
+ggplot(data=myiris2,aes(x=Petal.Length,y=Petal.Width,color=Species))+geom_point(size=3)
+```
+
+```{r}
+svmmodel = svm(factor(Species)~Petal.Width+Petal.Length, data=training.set, method="C-classification", kernal = "linear")
+svmmodel
+```
+
+```{r}
+newtrain = subset(training.set, select = c(Petal.Length, Petal.Width, Species))
+plot(svmmodel, data = newtrain, formula=Petal.Width~Petal.Length)
+```
+
+```{r}
+pred.training = predict(svmmodel,training.set)
+mean(pred.training==training.set$Species)
+```
+
+```{r}
+kern_svm=ksvm(Species~Petal.Width+Petal.Length, training.set, kernel="vanilladot")
+kern_svm
+```
+
+```{r}
+pred.test = predict(kern_svm, training.set)
+mean(pred.test == training.set$Species)
+```
+
+```{r}
+plot(kern_svm, data = training.set, formula = Petal.Width ~ Petal.Length)
+```

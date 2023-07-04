@@ -1,0 +1,104 @@
+---
+title: "Clustering Notes"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+library(caret)
+library(grid)
+library(gridExtra)
+library(GGally)
+library(rattle)
+library(MASS)
+library(cluster)
+library(e1071)
+library(kernlab)
+library(caTools)
+library(factoextra)
+```
+
+```{r}
+myiris = data.frame(iris)
+head(myiris)
+ggpairs(myiris, aes(color = Species))
+ggplot(data=myiris,aes(x=Petal.Length,y=Petal.Width,color=Species)) +geom_point(size=3)
+```
+
+## Hierarchal clustering
+
+```{r}
+clusters <- hclust(dist(iris[, 3:4]), method = "complete")
+plot(clusters)
+clusterCut <- cutree(clusters, 3)
+table(clusterCut, iris$Species)
+abline(h=3,col="red")
+```
+
+
+```{r}
+ggplot(iris, aes(Petal.Length, Petal.Width, color = Species)) + 
+  geom_point(alpha = 0.4, size = 3.5) + geom_point(col = clusterCut) + 
+  scale_color_manual(values = c('black', 'red', 'green'))
+```
+
+# extra hierarchal clustering
+
+```{r}
+h2 = hcut(iris[,3:4], k=3,hc_func = "hclust",stand=TRUE, hc_method = "complete")
+h2
+```
+
+```{r}
+fviz_dend(h2,rect=TRUE,cex=0.5,k_colors=c("red", "blue", "green"))
+```
+
+```{r}
+h2$cluster
+h2$size
+```
+
+```{r}
+h2c=hclust(dist(iris[,3:4]),method="complete")
+plot(h2c)
+```
+
+## K-mean Clustering
+
+```{r}
+set.seed(3920)
+kmi = kmeans(iris[,3:4],centers = 3, nstart = 15)
+kmi
+```
+
+```{r}
+kmi$tot.withinss
+sum(kmi$withinss)
+table(kmi$cluster,iris$Species)
+```
+
+```{r}
+totwss = NULL
+for(i in 2:15){
+  totwss = append(totwss,kmeans(iris[,3:4], centers=i)$tot.withinss)
+}
+plot(x=2:15,y=totwss, type="b",xlab="Clusters",ylab="Total Within SS")
+fviz_nbclust(iris[,3:4], kmeans,method="wss") + geom_vline(xintercept = 3, linetype=2)
+```
+
+```{r}
+ggplot(iris,aes(x=Petal.Length, y=Petal.Width,color=Species))+geom_point(size=4)+scale_color_manual(values=c("red","blue","green")) +
+  geom_point(shape=1,size=4,color="black")
+```
+
+```{r}
+ggplot(iris,aes(x=Petal.Length, y=Petal.Width,color=as.factor(kmi$cluster)))+geom_point(size=4)+scale_color_manual(name="Cluster",values=c("red","blue","green")) +
+  geom_point(shape=1,size=4,color="black")
+```
+
+```{r}
+nkm = cbind(myiris,cluster=kmi$cluster)
+class(nkm[,-5])
+fviz_cluster(kmi, nkm[,-5], geom="point",show.clust.cent = TRUE,pointsize = 2)
+```
