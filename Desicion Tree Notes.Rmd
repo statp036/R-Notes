@@ -1,0 +1,51 @@
+---
+title: "Decision Tree"
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+library(caret)
+library(grid)
+library(gridExtra)
+library(GGally)
+library(ggplot2)
+library(rattle)
+library(MASS)
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+```
+
+```{r}
+iris.tree = rpart(Species~Sepal.Length + Sepal.Width+Petal.Length+Petal.Width,iris,method="class")
+iris.tree
+prp(iris.tree, type=2,extra="auto",nn=TRUE,branch=1,varlen=0,yesno=2)
+```
+
+```{r}
+prp(iris.tree, cex=1,varlen=0,branch=0)
+```
+
+## Random Forest
+
+```{r}
+set.seed(800)
+training.set = sample(nrow(iris),0.7*nrow(iris))
+iris.forest = randomForest(formula=Species~Petal.Width+Sepal.Length+Sepal.Width,data=iris,ntree=500,subset=training.set,importance=TRUE)
+print(iris.forest)
+```
+
+```{r}
+plot(iris.forest)
+legend("topright",legend = c(levels(iris$Species),"QOB"),lty=c("dashed","dotted","dotdash","solid"), cex=.8,bty = "n")
+```
+
+```{r}
+ggVarImp(iris.forest)
+```
+
+```{r}
+printRandomForests(iris.forest,models=c(1,500))
+```

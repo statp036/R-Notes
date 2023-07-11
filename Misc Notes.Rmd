@@ -1,0 +1,34 @@
+---
+title: "Misc."
+output: word_document
+---
+
+```{r}
+library(datasets)
+library(tidyverse) 
+library(caret)
+library(grid)
+library(gridExtra)
+library(GGally)
+library(ggplot2)
+library(SentimentAnalysis)
+```
+
+```{r}
+states = map_data("state")
+```
+
+```{r}
+ggplot(data=states,aes(long,y=lat))+geom_polygon(color="black",fill="white",group=states$group)
+```
+
+```{r}
+ex4 = c("Baruch is unique mixture of students and faculty, very representative of New York City.",
+        "It is centrally located, in a gread neighborhood with helpful students, professors and support staff",
+        "i'm very happy i've returned after quite some time and look firward to returning next semester.")
+
+sentiment = analyzeSentiment(ex4)
+sentiment$SentimentGI
+convertToDirection(sentiment$SentimentGI)
+```
+
